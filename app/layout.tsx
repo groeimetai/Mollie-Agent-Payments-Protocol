@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AP2 + Mollie | Agent Payment Protocol",
-  description: "First AP2 integration with a real payment provider — powered by AI SDK + Mollie",
+  title: "bol.com | AP2 + Mollie",
+  description: "bol.com Webshop met AI Checkout Agent — powered by AP2 + Mollie",
 };
 
 export default function RootLayout({
@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="nl" className="dark">
+    <html lang="nl">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

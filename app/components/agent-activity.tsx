@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface AgentEvent {
   timestamp: string;
@@ -26,7 +26,7 @@ const AGENT_ICONS: Record<string, string> = {
 
 const AGENT_DESCRIPTIONS: Record<string, { name: string; role: string; tools: string[] }> = {
   orchestrator: {
-    name: 'CFO Orchestrator',
+    name: 'Checkout Orchestrator',
     role: 'Dirigeert het multi-agent systeem. Delegeert taken naar de juiste sub-agent.',
     tools: ['shopping', 'mandate', 'payment', 'getSystemStatus'],
   },
@@ -42,8 +42,8 @@ const AGENT_DESCRIPTIONS: Record<string, { name: string; role: string; tools: st
   },
   payment: {
     name: 'Payment Agent (Mollie)',
-    role: 'Verwerkt echte betalingen via de Mollie API.',
-    tools: ['createMolliePayment', 'checkPaymentStatus', 'cancelPayment', 'generateReceipt'],
+    role: 'Ondersteunt handmatige en automatische checkout via de Mollie API.',
+    tools: ['setupCustomerProfile', 'createMolliePayment', 'checkPaymentStatus', 'cancelPayment', 'generateReceipt'],
   },
 };
 
@@ -59,6 +59,7 @@ export function AgentActivity() {
   const [events, setEvents] = useState<AgentEvent[]>([]);
   const [connected, setConnected] = useState(false);
   const [expandedAgent, setExpandedAgent] = useState<string | null>(null);
+  const feedEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const eventSource = new EventSource('/api/events');
@@ -80,6 +81,11 @@ export function AgentActivity() {
 
     return () => eventSource.close();
   }, []);
+
+  // Auto-scroll to latest event
+  useEffect(() => {
+    feedEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [events]);
 
   // Determine which agents are currently active
   const activeAgents = new Set<string>();
@@ -162,7 +168,7 @@ export function AgentActivity() {
             </div>
             {expandedAgent === 'shopping' && (
               <div className="mt-2 px-2 py-1 rounded bg-cyan-900/20 border border-cyan-800/30 text-cyan-400">
-                ⓘ Gebruikt demo-data (5 laptops van Bol.com, Coolblue, MediaMarkt)
+                ⓘ Zoekt in productcatalogus (bol.com, Nike, Thuisbezorgd, Booking.com)
               </div>
             )}
             {expandedAgent === 'payment' && (
@@ -234,6 +240,7 @@ export function AgentActivity() {
             </div>
           </div>
         ))}
+        <div ref={feedEndRef} />
       </div>
     </div>
   );

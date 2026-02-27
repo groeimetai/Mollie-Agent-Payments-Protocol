@@ -57,6 +57,24 @@ export interface PaymentReceipt {
   auditTrail: AuditEntry[];
 }
 
+// Auto-checkout / Mollie Recurring types
+export interface CustomerProfile {
+  mollieCustomerId: string;
+  name: string;
+  email: string;
+  preferredPaymentMethod: 'ideal' | 'creditcard' | 'bancontact';
+  mollieMandateId: string | null;
+  mandateStatus: 'pending' | 'valid' | 'invalid' | null;
+  autoCheckoutEnabled: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const DEMO_CUSTOMER = {
+  name: 'Niels van der Werf',
+  email: 'niels@ap2-demo.nl',
+};
+
 // In-memory store for mandate chain (single session)
 export interface MandateStore {
   intentMandates: Map<string, IntentMandate>;
@@ -65,6 +83,7 @@ export interface MandateStore {
   receipts: Map<string, PaymentReceipt>;
   auditTrail: AuditEntry[];
   activePaymentId: string | null; // Current Mollie payment ID for kill switch
+  customerProfile: CustomerProfile | null;
 }
 
 // Global singleton store
@@ -75,7 +94,19 @@ export const mandateStore: MandateStore = {
   receipts: new Map(),
   auditTrail: [],
   activePaymentId: null,
+  customerProfile: null,
 };
+
+export function hasValidRecurringSetup(): boolean {
+  const profile = mandateStore.customerProfile;
+  return !!(
+    profile &&
+    profile.mollieCustomerId &&
+    profile.mollieMandateId &&
+    profile.mandateStatus === 'valid' &&
+    profile.autoCheckoutEnabled
+  );
+}
 
 export function addAuditEntry(entry: Omit<AuditEntry, 'timestamp'>) {
   const fullEntry: AuditEntry = {

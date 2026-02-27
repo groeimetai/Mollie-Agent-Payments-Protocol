@@ -1,5 +1,8 @@
 // Simple event system for agent activity tracking
 // Used by the dashboard to show real-time agent status
+//
+// Uses globalThis to ensure singleton across all Next.js route handlers
+// (Turbopack/HMR can re-evaluate modules, creating separate instances)
 
 export type AgentEvent = {
   timestamp: string;
@@ -9,30 +12,43 @@ export type AgentEvent = {
   data?: Record<string, unknown>;
 };
 
-// In-memory event log (SSE consumers read from this)
-const events: AgentEvent[] = [];
-const listeners: Set<(event: AgentEvent) => void> = new Set();
+interface EventStore {
+  events: AgentEvent[];
+  listeners: Set<(event: AgentEvent) => void>;
+}
+
+// Singleton via globalThis — survives HMR and module re-evaluation
+const g = globalThis as unknown as { __ap2EventStore?: EventStore };
+if (!g.__ap2EventStore) {
+  g.__ap2EventStore = {
+    events: [],
+    listeners: new Set(),
+  };
+}
+const store = g.__ap2EventStore;
 
 export function emitAgentEvent(event: Omit<AgentEvent, 'timestamp'>) {
   const fullEvent: AgentEvent = {
     ...event,
     timestamp: new Date().toISOString(),
   };
-  events.push(fullEvent);
+  store.events.push(fullEvent);
   // Keep last 100 events
-  if (events.length > 100) events.shift();
-  listeners.forEach((fn) => fn(fullEvent));
+  if (store.events.length > 100) store.events.shift();
+  store.listeners.forEach((fn) => fn(fullEvent));
 }
 
 export function onAgentEvent(listener: (event: AgentEvent) => void) {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
+  store.listeners.add(listener);
+  return () => {
+    store.listeners.delete(listener);
+  };
 }
 
 export function getRecentEvents(count = 20): AgentEvent[] {
-  return events.slice(-count);
+  return store.events.slice(-count);
 }
 
 export function clearEvents() {
-  events.length = 0;
+  store.events.length = 0;
 }

@@ -38,6 +38,46 @@ export async function POST(request: Request) {
         receipt.status = 'success';
       }
       mandateStore.activePaymentId = null;
+
+      // Capture mandate for auto-checkout if customer profile exists without mandate
+      const profile = mandateStore.customerProfile;
+      if (profile && profile.mollieCustomerId && !profile.mollieMandateId && payment.customerId) {
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const mandates = await (mollieClient as any).customerMandates.page({
+            customerId: profile.mollieCustomerId,
+          });
+
+          // Find the first valid mandate
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const validMandate = mandates?.find?.((m: any) => m.status === 'valid') || mandates?.[0];
+
+          if (validMandate) {
+            profile.mollieMandateId = validMandate.id;
+            profile.mandateStatus = validMandate.status === 'valid' ? 'valid' : 'pending';
+            profile.updatedAt = new Date().toISOString();
+
+            addAuditEntry({
+              agent: 'Webhook',
+              action: 'CAPTURE_MOLLIE_MANDATE',
+              details: `Mandate vastgelegd: ${validMandate.id} (status: ${validMandate.status}) — auto-checkout nu actief`,
+            });
+
+            emitAgentEvent({
+              agent: 'payment',
+              type: 'result',
+              message: `Auto-checkout actief! Mandate: ${validMandate.id}`,
+              data: {
+                autoCheckoutActive: true,
+                mandateId: validMandate.id,
+                mandateStatus: validMandate.status,
+              },
+            });
+          }
+        } catch (mandateError: unknown) {
+          console.error('Mandate capture error:', mandateError instanceof Error ? mandateError.message : mandateError);
+        }
+      }
     }
 
     return NextResponse.json({ received: true });
