@@ -2,6 +2,7 @@
 
 import { useChat, type UIMessage } from '@ai-sdk/react';
 import { useRef, useEffect, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 const TOOL_LABELS: Record<string, { icon: string; label: string; agent: string }> = {
   shopping: { icon: '🛒', label: 'Shopping Agent', agent: 'Zoekt & vergelijkt producten' },
@@ -172,9 +173,29 @@ export function Chat() {
               {/* Render parts */}
               {message.parts.map((part, i) => {
                 if (part.type === 'text') {
+                  // User messages: plain text. Assistant messages: rendered markdown.
+                  if (message.role === 'user') {
+                    return (
+                      <div key={i} className="whitespace-pre-wrap text-sm leading-relaxed">
+                        {part.text}
+                      </div>
+                    );
+                  }
                   return (
-                    <div key={i} className="whitespace-pre-wrap text-sm leading-relaxed">
-                      {part.text}
+                    <div key={i} className="text-sm leading-relaxed prose prose-invert prose-sm max-w-none
+                      prose-headings:text-zinc-100 prose-headings:font-semibold prose-headings:mt-3 prose-headings:mb-1
+                      prose-p:text-zinc-200 prose-p:my-1.5
+                      prose-strong:text-white prose-strong:font-semibold
+                      prose-em:text-zinc-300
+                      prose-ul:my-1.5 prose-ol:my-1.5 prose-li:my-0.5 prose-li:text-zinc-200
+                      prose-code:text-emerald-400 prose-code:bg-zinc-900 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-code:before:content-none prose-code:after:content-none
+                      prose-pre:bg-zinc-900 prose-pre:border prose-pre:border-zinc-700 prose-pre:rounded-lg prose-pre:my-2
+                      prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
+                      prose-table:border-collapse prose-th:border prose-th:border-zinc-600 prose-th:bg-zinc-900 prose-th:px-3 prose-th:py-1.5 prose-th:text-zinc-200 prose-th:text-left prose-th:text-xs
+                      prose-td:border prose-td:border-zinc-700 prose-td:px-3 prose-td:py-1.5 prose-td:text-zinc-300 prose-td:text-xs
+                      prose-hr:border-zinc-700 prose-hr:my-3
+                    ">
+                      <ReactMarkdown>{part.text}</ReactMarkdown>
                     </div>
                   );
                 }
