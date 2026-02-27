@@ -3,8 +3,12 @@ import { z } from 'zod';
 import { getModel } from '@/lib/model';
 import { emitAgentEvent } from '@/lib/events';
 
-// Simulated product database for hackathon demo
+// Multi-category product database — demonstrates AP2 across different merchant verticals
+// Each category represents a different Mollie merchant segment
 const PRODUCT_DATABASE = [
+  // ═══════════════════════════════════════════
+  // ELECTRONICS — Bol.com, Coolblue, MediaMarkt
+  // ═══════════════════════════════════════════
   {
     id: 'bol-lenovo-ideapad',
     name: 'Lenovo IdeaPad Slim 5 16IRU9',
@@ -105,6 +109,218 @@ const PRODUCT_DATABASE = [
     url: 'https://www.coolblue.nl/product/asus-vivobook-s14',
     deliveryTime: 'Morgen in huis',
   },
+
+  // ═══════════════════════════════════════════
+  // FASHION — Zalando, Nike.nl
+  // ═══════════════════════════════════════════
+  {
+    id: 'zalando-nike-airmax90',
+    name: 'Nike Air Max 90',
+    vendor: 'Zalando',
+    price: 139.99,
+    currency: 'EUR',
+    category: 'sneakers',
+    specs: {
+      maat: '36-46',
+      kleur: 'White/Black',
+      materiaal: 'Leer en mesh',
+      zool: 'Air Max demping',
+      pasvorm: 'Normaal',
+      weight: '0.35kg',
+    },
+    rating: 4.6,
+    reviewCount: 1842,
+    url: 'https://www.zalando.nl/nike-air-max-90',
+    deliveryTime: 'Gratis bezorging, 1-3 werkdagen',
+  },
+  {
+    id: 'nike-airforce1',
+    name: 'Nike Air Force 1 \'07',
+    vendor: 'Nike.nl',
+    price: 119.99,
+    currency: 'EUR',
+    category: 'sneakers',
+    specs: {
+      maat: '36-48.5',
+      kleur: 'White/White',
+      materiaal: 'Volledig leer',
+      zool: 'Air cushioning',
+      pasvorm: 'Normaal',
+      weight: '0.38kg',
+    },
+    rating: 4.8,
+    reviewCount: 3210,
+    url: 'https://www.nike.com/nl/t/air-force-1-07',
+    deliveryTime: 'Gratis bezorging, 2-5 werkdagen',
+  },
+  {
+    id: 'zalando-adidas-samba',
+    name: 'Adidas Samba OG',
+    vendor: 'Zalando',
+    price: 109.95,
+    currency: 'EUR',
+    category: 'sneakers',
+    specs: {
+      maat: '36-47',
+      kleur: 'Core Black / Cloud White',
+      materiaal: 'Leer bovenwerk',
+      zool: 'Rubber buitenzool',
+      pasvorm: 'Normaal',
+      weight: '0.32kg',
+    },
+    rating: 4.7,
+    reviewCount: 2156,
+    url: 'https://www.zalando.nl/adidas-samba-og',
+    deliveryTime: 'Gratis bezorging, 1-3 werkdagen',
+  },
+  {
+    id: 'zalando-nike-dunk',
+    name: 'Nike Dunk Low Retro',
+    vendor: 'Zalando',
+    price: 109.99,
+    currency: 'EUR',
+    category: 'sneakers',
+    specs: {
+      maat: '38.5-47.5',
+      kleur: 'Panda (Black/White)',
+      materiaal: 'Leer',
+      zool: 'Schuimrubber tussenzool',
+      pasvorm: 'Normaal',
+      weight: '0.34kg',
+    },
+    rating: 4.5,
+    reviewCount: 987,
+    url: 'https://www.zalando.nl/nike-dunk-low-retro',
+    deliveryTime: 'Gratis bezorging, 1-3 werkdagen',
+  },
+
+  // ═══════════════════════════════════════════
+  // BOODSCHAPPEN — Albert Heijn, Jumbo, Picnic
+  // ═══════════════════════════════════════════
+  {
+    id: 'ah-boodschappenpakket-pasta',
+    name: 'Pasta Carbonara Pakket',
+    vendor: 'Albert Heijn',
+    price: 12.47,
+    currency: 'EUR',
+    category: 'boodschappen',
+    specs: {
+      items: 'Spaghetti, spekblokjes, eieren, Parmezaanse kaas, peper',
+      porties: '4 personen',
+      bereidingstijd: '25 minuten',
+      dieet: 'Geen restricties',
+      bewaring: 'Koelkast',
+      weight: '1.2kg',
+    },
+    rating: 4.4,
+    reviewCount: 567,
+    url: 'https://www.ah.nl/recepten/pasta-carbonara',
+    deliveryTime: 'Vandaag bezorgd (voor 22:00 besteld)',
+  },
+  {
+    id: 'jumbo-boodschappenpakket-pasta',
+    name: 'Carbonara Maaltijdbox',
+    vendor: 'Jumbo',
+    price: 11.89,
+    currency: 'EUR',
+    category: 'boodschappen',
+    specs: {
+      items: 'Penne, pancetta, roomkaas, eieren, knoflook',
+      porties: '4 personen',
+      bereidingstijd: '20 minuten',
+      dieet: 'Geen restricties',
+      bewaring: 'Koelkast',
+      weight: '1.1kg',
+    },
+    rating: 4.2,
+    reviewCount: 321,
+    url: 'https://www.jumbo.com/recepten/carbonara',
+    deliveryTime: 'Vandaag bezorgd (voor 21:00 besteld)',
+  },
+  {
+    id: 'picnic-boodschappen-pasta',
+    name: 'Pasta Carbonara Boodschappenlijst',
+    vendor: 'Picnic',
+    price: 10.95,
+    currency: 'EUR',
+    category: 'boodschappen',
+    specs: {
+      items: 'Spaghetti, spekjes, eieren, kaas, roomboter',
+      porties: '4 personen',
+      bereidingstijd: '25 minuten',
+      dieet: 'Geen restricties',
+      bewaring: 'Koelkast',
+      weight: '1.0kg',
+    },
+    rating: 4.3,
+    reviewCount: 892,
+    url: 'https://www.picnic.app/nl/recepten',
+    deliveryTime: 'Volgende bezorgmoment beschikbaar',
+  },
+
+  // ═══════════════════════════════════════════
+  // REIZEN — Booking.com, KLM
+  // ═══════════════════════════════════════════
+  {
+    id: 'booking-amsterdam-hotel',
+    name: 'NH Amsterdam Centre — Superior Kamer',
+    vendor: 'Booking.com',
+    price: 189.00,
+    currency: 'EUR',
+    category: 'hotel',
+    specs: {
+      locatie: 'Amsterdam Centrum, 500m van Dam',
+      kamerttype: 'Superior Double',
+      ontbijt: 'Inclusief ontbijtbuffet',
+      wifi: 'Gratis WiFi',
+      annulering: 'Gratis annuleren tot 24u voor check-in',
+      weight: 'n/a',
+    },
+    rating: 4.3,
+    reviewCount: 4521,
+    url: 'https://www.booking.com/hotel/nh-amsterdam-centre',
+    deliveryTime: 'Direct bevestigd',
+  },
+  {
+    id: 'booking-amsterdam-budget',
+    name: 'The Student Hotel Amsterdam City — Studio',
+    vendor: 'Booking.com',
+    price: 129.00,
+    currency: 'EUR',
+    category: 'hotel',
+    specs: {
+      locatie: 'Amsterdam Oost, bij Oosterpark',
+      kamerttype: 'Studio voor 2 personen',
+      ontbijt: 'Niet inbegrepen (€14 p.p.)',
+      wifi: 'Gratis WiFi',
+      annulering: 'Gratis annuleren tot 48u voor check-in',
+      weight: 'n/a',
+    },
+    rating: 4.1,
+    reviewCount: 2873,
+    url: 'https://www.booking.com/hotel/student-hotel-amsterdam',
+    deliveryTime: 'Direct bevestigd',
+  },
+  {
+    id: 'booking-amsterdam-luxury',
+    name: 'Pulitzer Amsterdam — Deluxe Canal View',
+    vendor: 'Booking.com',
+    price: 349.00,
+    currency: 'EUR',
+    category: 'hotel',
+    specs: {
+      locatie: 'Prinsengracht, hartje grachtengordel',
+      kamerttype: 'Deluxe Double met grachtzicht',
+      ontbijt: 'Inclusief uitgebreid ontbijt',
+      wifi: 'Gratis WiFi',
+      annulering: 'Gratis annuleren tot 72u voor check-in',
+      weight: 'n/a',
+    },
+    rating: 4.7,
+    reviewCount: 1987,
+    url: 'https://www.booking.com/hotel/pulitzer-amsterdam',
+    deliveryTime: 'Direct bevestigd',
+  },
 ];
 
 const searchProducts = tool({
@@ -165,26 +381,36 @@ const compareProducts = tool({
       productIds.includes(p.id)
     );
 
-    // Simple scoring based on priorities
+    // Universal scoring — works across all product categories
     const scored = products.map((p) => {
       let score = 0;
-      const prioList = priorities || ['price', 'performance'];
+      const prioList = priorities || ['price', 'quality'];
 
       for (const priority of prioList) {
         switch (priority) {
-          case 'price':
-            // Lower price = higher score (inverse, max 1200 budget assumed)
-            score += (1200 - p.price) / 1200 * 30;
+          case 'price': {
+            // Lower price = higher score, normalized per category
+            const maxInCategory = Math.max(...products.map(pr => pr.price), p.price);
+            score += ((maxInCategory - p.price) / maxInCategory) * 30;
             break;
+          }
           case 'performance':
-            score += p.specs.ram.includes('16GB') ? 20 : 10;
-            score += p.specs.storage.includes('1TB') ? 15 : 8;
+            score += p.specs.ram?.includes('16GB') ? 20 : 10;
+            score += p.specs.storage?.includes('1TB') ? 15 : 8;
             break;
           case 'portability':
-            score += (2.0 - parseFloat(p.specs.weight)) * 20;
+            score += p.specs.weight !== 'n/a' ? (2.0 - parseFloat(p.specs.weight)) * 20 : 10;
             break;
           case 'display':
-            score += p.specs.display.includes('OLED') ? 25 : 10;
+            score += p.specs.display?.includes('OLED') ? 25 : 10;
+            break;
+          case 'quality':
+            // Universal: rating * review volume
+            score += p.rating * 5;
+            score += Math.min(p.reviewCount / 100, 10);
+            break;
+          case 'delivery':
+            score += p.deliveryTime.includes('Vandaag') || p.deliveryTime.includes('Morgen') || p.deliveryTime.includes('Direct') ? 20 : 8;
             break;
         }
       }
@@ -238,14 +464,22 @@ export async function runShoppingAgent(prompt: string): Promise<string> {
 
   const result = await generateText({
     model: getModel(),
-    system: `Je bent de Shopping Agent. Je helpt met het zoeken en vergelijken van producten bij Nederlandse webshops.
+    system: `Je bent de Shopping Agent. Je helpt met het zoeken en vergelijken van producten bij Nederlandse webshops en merchants.
+
+Beschikbare categorieën:
+- "laptop" — Bol.com, Coolblue, MediaMarkt
+- "sneakers" — Zalando, Nike.nl
+- "boodschappen" — Albert Heijn, Jumbo, Picnic
+- "hotel" — Booking.com
 
 Je werkwijze:
-1. Gebruik searchProducts om producten te zoeken op basis van de criteria
-2. Gebruik compareProducts om de beste opties te vergelijken
-3. Geef een duidelijke aanbeveling met motivatie
+1. Bepaal de juiste categorie op basis van de gebruiker's vraag
+2. Gebruik searchProducts om producten te zoeken (gebruik de juiste categorie-naam)
+3. Gebruik compareProducts om de beste opties te vergelijken
+4. Geef een duidelijke aanbeveling met motivatie
 
 Communiceer in het Nederlands. Wees beknopt maar informatief.
+Benoem altijd de vendor/merchant bij naam.
 Geef altijd de product-ID van je aanbeveling terug zodat andere agents ermee verder kunnen.`,
     tools: shoppingTools,
     stopWhen: stepCountIs(5),
