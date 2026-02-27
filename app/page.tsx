@@ -122,19 +122,39 @@ function HomeContent() {
       )}
       <div className="flex flex-col h-dvh">
         {/* Demo banner */}
-        <div className="bg-gradient-to-r from-zinc-900 via-zinc-900 to-blue-950 text-white px-4 py-2.5 shrink-0 border-b border-zinc-800">
-          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="flex items-center gap-1.5 shrink-0">
-                <span className="font-bold text-blue-400">AP2</span>
-                <span className="text-zinc-600">+</span>
-                <span className="font-bold text-orange-400">Mollie</span>
+        <div className="bg-gradient-to-r from-zinc-900 via-zinc-900 to-blue-950 text-white px-4 py-3 shrink-0 border-b border-zinc-800">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <span className="font-bold text-blue-400">AP2</span>
+                  <span className="text-zinc-600">+</span>
+                  <span className="font-bold text-orange-400">Mollie</span>
+                </div>
+                <span className="text-zinc-700 hidden sm:inline">|</span>
+                <span className="text-zinc-300 text-sm hidden sm:inline">Google&apos;s Agent Payment Protocol integrated with Mollie</span>
               </div>
-              <span className="text-zinc-700 hidden sm:inline">|</span>
-              <span className="text-zinc-300 text-sm hidden sm:inline">Google&apos;s Agent Payment Protocol integrated with Mollie</span>
+              <div className="text-xs text-zinc-500 shrink-0 hidden md:block">
+                Approve once → then fully automatic · No forms · No redirects
+              </div>
             </div>
-            <div className="text-xs text-zinc-500 shrink-0 hidden md:block">
-              Approve once → then fully automatic · No forms · No redirects
+            <div className="mt-2 flex items-center gap-6 text-xs text-zinc-500">
+              <div className="flex items-center gap-2">
+                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 font-bold text-[10px] shrink-0">1</span>
+                <span>Add a product to your cart</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 font-bold text-[10px] shrink-0">2</span>
+                <span>Open the chat agent <span className="text-zinc-600">(bottom-right)</span></span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 font-bold text-[10px] shrink-0">3</span>
+                <span>Ask it to check out — <span className="text-emerald-400 font-medium">approve once, then fully automatic</span></span>
+              </div>
+              <div className="hidden lg:block text-zinc-700 mx-1">|</div>
+              <div className="hidden lg:flex items-center gap-2 text-zinc-600">
+                <span className="text-zinc-500">Dashboard →</span> real-time view of the multi-agent system &amp; AP2 mandate chain
+              </div>
             </div>
           </div>
         </div>
