@@ -27,22 +27,22 @@ const AGENT_ICONS: Record<string, string> = {
 const AGENT_DESCRIPTIONS: Record<string, { name: string; role: string; tools: string[] }> = {
   orchestrator: {
     name: 'Checkout Orchestrator',
-    role: 'Dirigeert het multi-agent systeem. Delegeert taken naar de juiste sub-agent.',
+    role: 'Directs the multi-agent system. Delegates tasks to the right sub-agent.',
     tools: ['shopping', 'mandate', 'payment', 'getSystemStatus'],
   },
   shopping: {
     name: 'Shopping Agent',
-    role: 'Zoekt en vergelijkt producten. Gebruikt demo-data van NL webshops.',
+    role: 'Searches and compares products. Uses demo data from webshops.',
     tools: ['searchProducts', 'compareProducts'],
   },
   mandate: {
     name: 'Mandate Agent (AP2)',
-    role: 'Beheert het AP2 mandate protocol. Maakt JWT-signed mandates aan.',
+    role: 'Manages the AP2 mandate protocol. Creates JWT-signed mandates.',
     tools: ['createIntentMandate', 'createCartMandate', 'createPaymentMandate', 'validateMandateChain'],
   },
   payment: {
     name: 'Payment Agent (Mollie)',
-    role: 'Ondersteunt handmatige en automatische checkout via de Mollie API.',
+    role: 'Supports manual and automatic checkout via the Mollie API.',
     tools: ['setupCustomerProfile', 'createMolliePayment', 'checkPaymentStatus', 'cancelPayment', 'generateReceipt'],
   },
 };
@@ -113,7 +113,7 @@ export function AgentActivity() {
               }`}
             />
             <span className="text-xs text-zinc-500">
-              {connected ? 'Live' : 'Verbinden...'}
+              {connected ? 'Live' : 'Connecting...'}
             </span>
           </div>
         </div>
@@ -168,12 +168,12 @@ export function AgentActivity() {
             </div>
             {expandedAgent === 'shopping' && (
               <div className="mt-2 px-2 py-1 rounded bg-cyan-900/20 border border-cyan-800/30 text-cyan-400">
-                ⓘ Zoekt in productcatalogus (bol.com, Nike, Thuisbezorgd, Booking.com)
+                ⓘ Searches product catalog (bol.com, Nike, Thuisbezorgd, Booking.com)
               </div>
             )}
             {expandedAgent === 'payment' && (
               <div className="mt-2 px-2 py-1 rounded bg-emerald-900/20 border border-emerald-800/30 text-emerald-400">
-                ⓘ Echte Mollie API — betalingen in test-modus
+                ⓘ Real Mollie API — payments in test mode
               </div>
             )}
             {expandedAgent === 'mandate' && (
@@ -209,8 +209,8 @@ export function AgentActivity() {
       <div className="flex-1 overflow-y-auto p-3 space-y-1.5">
         {events.length === 0 && (
           <div className="text-center text-zinc-600 text-xs mt-8 space-y-2">
-            <p>Wacht op agent activiteit...</p>
-            <p className="text-zinc-700">Klik op een agent hierboven voor details</p>
+            <p>Waiting for agent activity...</p>
+            <p className="text-zinc-700">Click an agent above for details</p>
           </div>
         )}
 
@@ -227,7 +227,7 @@ export function AgentActivity() {
           >
             <div className="flex items-start gap-2">
               <span className="text-zinc-600 shrink-0">
-                {new Date(event.timestamp).toLocaleTimeString('nl-NL', {
+                {new Date(event.timestamp).toLocaleTimeString('en-US', {
                   hour: '2-digit',
                   minute: '2-digit',
                   second: '2-digit',

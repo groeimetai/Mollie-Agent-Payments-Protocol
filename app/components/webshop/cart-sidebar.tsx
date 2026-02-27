@@ -29,7 +29,7 @@ export function CartSidebar({ open, onClose }: CartSidebarProps) {
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
           <h2 className="text-lg font-bold text-gray-900">
-            Winkelwagen ({itemCount})
+            Shopping Cart ({itemCount})
           </h2>
           <button
             onClick={onClose}
@@ -46,7 +46,7 @@ export function CartSidebar({ open, onClose }: CartSidebarProps) {
           {items.length === 0 && (
             <div className="text-center text-gray-400 mt-12">
               <div className="text-4xl mb-3">🛒</div>
-              <p className="text-sm">Je winkelwagen is leeg</p>
+              <p className="text-sm">Your cart is empty</p>
             </div>
           )}
 
@@ -91,13 +91,13 @@ export function CartSidebar({ open, onClose }: CartSidebarProps) {
         {items.length > 0 && (
           <div className="border-t border-gray-200 px-6 py-4">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm text-gray-600">Totaal</span>
+              <span className="text-sm text-gray-600">Total</span>
               <span className="text-xl font-bold text-gray-900">
                 €{total.toFixed(2)}
               </span>
             </div>
             <div className="text-xs text-center text-gray-400 mt-2">
-              Gebruik de checkout agent rechtsonder om af te rekenen
+              Use the checkout agent in the bottom right to check out
             </div>
           </div>
         )}

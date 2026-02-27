@@ -31,9 +31,9 @@ export function CheckoutPopup({ activeCategory }: CheckoutPopupProps) {
 
   // Build cart context string for auto-send
   const cartContext = items.length > 0
-    ? `Ik ben op ${brand.name} en heb het volgende in mijn winkelwagen: ${items
+    ? `I'm on ${brand.name} and have the following in my cart: ${items
         .map((i) => `${i.product.name} - €${i.product.price.toFixed(2)}`)
-        .join(', ')}. Totaal: €${total.toFixed(2)}. Help me afrekenen.`
+        .join(', ')}. Total: €${total.toFixed(2)}. Help me check out.`
     : undefined;
 
   const isLarge = size === 'large';
@@ -86,7 +86,7 @@ export function CheckoutPopup({ activeCategory }: CheckoutPopupProps) {
               <button
                 onClick={() => setSize(isLarge ? 'compact' : 'large')}
                 className="p-1.5 rounded-lg hover:bg-white/20 transition-colors"
-                title={isLarge ? 'Kleiner' : 'Groter'}
+                title={isLarge ? 'Smaller' : 'Larger'}
               >
                 {isLarge ? (
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

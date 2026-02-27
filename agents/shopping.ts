@@ -16,7 +16,7 @@ const searchProducts = tool({
     emitAgentEvent({
       agent: 'shopping',
       type: 'tool_call',
-      message: `Zoeken naar ${category} producten${maxPrice ? ` tot €${maxPrice}` : ''}`,
+      message: `Searching for ${category} products${maxPrice ? ` up to €${maxPrice}` : ''}`,
     });
 
     let results = PRODUCT_DATABASE.filter(
@@ -33,7 +33,7 @@ const searchProducts = tool({
     emitAgentEvent({
       agent: 'shopping',
       type: 'result',
-      message: `${results.length} producten gevonden`,
+      message: `${results.length} products found`,
       data: { count: results.length },
     });
 
@@ -55,7 +55,7 @@ const compareProducts = tool({
     emitAgentEvent({
       agent: 'shopping',
       type: 'tool_call',
-      message: `Vergelijken van ${productIds.length} producten`,
+      message: `Comparing ${productIds.length} products`,
     });
 
     const products = PRODUCT_DATABASE.filter((p) =>
@@ -104,7 +104,7 @@ const compareProducts = tool({
     emitAgentEvent({
       agent: 'shopping',
       type: 'result',
-      message: `Vergelijking compleet. Beste keuze: ${scored[0]?.name}`,
+      message: `Comparison complete. Best choice: ${scored[0]?.name}`,
     });
 
     return {
@@ -126,7 +126,7 @@ const compareProducts = tool({
             name: scored[0].name,
             vendor: scored[0].vendor,
             price: scored[0].price,
-            reason: `Beste score (${scored[0].score}) op basis van ${(priorities || ['price', 'performance']).join(', ')}`,
+            reason: `Best score (${scored[0].score}) based on ${(priorities || ['price', 'performance']).join(', ')}`,
           }
         : null,
     };
@@ -140,35 +140,35 @@ export async function runShoppingAgent(prompt: string): Promise<string> {
   emitAgentEvent({
     agent: 'shopping',
     type: 'start',
-    message: 'Shopping Agent geactiveerd',
+    message: 'Shopping Agent activated',
   });
 
   const result = await generateText({
     model: getModel(),
-    system: `Je bent de Shopping Agent. Je helpt met het zoeken en vergelijken van producten in onze webshop.
+    system: `You are the Shopping Agent. You help search and compare products in our webshop.
 
-Beschikbare categorieën en brands:
-- "laptop" → bol.com: laptops, laptophoezen en accessoires
-- "sneakers" → Nike: sneakers, beschermsprays en schoonmaakproducten
-- "boodschappen" → Thuisbezorgd: maaltijdpakketten en dranken (frisdrank, wijn, sap)
-- "hotel" → Booking.com: hotels en accommodaties in Amsterdam
+Available categories and brands:
+- "laptop" → bol.com: laptops, laptop sleeves and accessories
+- "sneakers" → Nike: sneakers, protection sprays and cleaning products
+- "boodschappen" → Thuisbezorgd: meal kits and drinks (soft drinks, wine, juice)
+- "hotel" → Booking.com: hotels and accommodations in Amsterdam
 
-## Cross-sell suggesties
-Doe ALTIJD slimme aanvullende suggesties na een productkeuze:
-- Na laptop → stel een laptophoes voor ("Wil je er een beschermhoes bij? We hebben hoezen vanaf €19,99")
-- Na sneakers → stel beschermspray voor ("Tip: bescherm je nieuwe sneakers met Crep Protect spray!")
-- Na eten/maaltijdpakket → stel drinken voor ("Wil je er drinken bij? We hebben frisdrank, wijn en verse sap")
-- Na hotel → vermeld ontbijt-opties of premium kamers
+## Cross-sell suggestions
+ALWAYS make smart additional suggestions after a product choice:
+- After laptop → suggest a laptop sleeve ("Would you like a protective sleeve? We have sleeves from €19.99")
+- After sneakers → suggest protection spray ("Tip: protect your new sneakers with Crep Protect spray!")
+- After food/meal kit → suggest drinks ("Would you like drinks with that? We have soft drinks, wine and fresh juice")
+- After hotel → mention breakfast options or premium rooms
 
-## Je werkwijze:
-1. Bepaal de juiste categorie op basis van de gebruiker's vraag
-2. Gebruik searchProducts om producten te zoeken (gebruik de juiste categorie-naam)
-3. Gebruik compareProducts om de beste opties te vergelijken
-4. Geef een duidelijke aanbeveling met motivatie
-5. Doe een cross-sell suggestie met relevante aanvullende producten uit dezelfde categorie
+## Your workflow:
+1. Determine the right category based on the user's question
+2. Use searchProducts to search for products (use the correct category name)
+3. Use compareProducts to compare the best options
+4. Give a clear recommendation with reasoning
+5. Make a cross-sell suggestion with relevant additional products from the same category
 
-Communiceer in het Nederlands. Wees beknopt maar informatief.
-Geef altijd de product-ID van je aanbeveling terug zodat andere agents ermee verder kunnen.`,
+Communicate in English. Be concise but informative.
+Always return the product ID of your recommendation so other agents can continue with it.`,
     tools: shoppingTools,
     stopWhen: stepCountIs(5),
     prompt,
@@ -177,7 +177,7 @@ Geef altijd de product-ID van je aanbeveling terug zodat andere agents ermee ver
   emitAgentEvent({
     agent: 'shopping',
     type: 'complete',
-    message: 'Shopping Agent klaar',
+    message: 'Shopping Agent done',
   });
 
   return result.text;

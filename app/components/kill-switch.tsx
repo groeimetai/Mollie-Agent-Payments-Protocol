@@ -7,7 +7,7 @@ export function KillSwitch() {
   const [killed, setKilled] = useState(false);
 
   async function handleKill() {
-    if (!confirm('Weet je zeker dat je ALLE agents wilt stoppen en betalingen wilt annuleren?')) {
+    if (!confirm('Are you sure you want to stop ALL agents and cancel payments?')) {
       return;
     }
 

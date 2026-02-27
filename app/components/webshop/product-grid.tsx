@@ -17,7 +17,7 @@ export interface BrandTheme {
 export const CATEGORIES: { key: string; label: string; emoji: string }[] = [
   { key: 'laptop', label: 'Laptops', emoji: '💻' },
   { key: 'sneakers', label: 'Sneakers', emoji: '👟' },
-  { key: 'boodschappen', label: 'Eten', emoji: '🍕' },
+  { key: 'boodschappen', label: 'Food', emoji: '🍕' },
   { key: 'hotel', label: 'Hotels', emoji: '🏨' },
 ];
 
@@ -29,7 +29,7 @@ export const BRAND_THEMES: Record<string, BrandTheme> = {
     buttonBg: 'bg-[#0000C4]',
     buttonHover: 'hover:bg-[#0000A0]',
     accentText: 'text-blue-200',
-    searchPlaceholder: 'Zoek in bol.com...',
+    searchPlaceholder: 'Search bol.com...',
     tabActiveBg: 'bg-[#0000C4]',
   },
   sneakers: {
@@ -39,7 +39,7 @@ export const BRAND_THEMES: Record<string, BrandTheme> = {
     buttonBg: 'bg-[#111111]',
     buttonHover: 'hover:bg-[#333333]',
     accentText: 'text-gray-400',
-    searchPlaceholder: 'Zoek in Nike...',
+    searchPlaceholder: 'Search Nike...',
     tabActiveBg: 'bg-[#111111]',
   },
   boodschappen: {
@@ -49,7 +49,7 @@ export const BRAND_THEMES: Record<string, BrandTheme> = {
     buttonBg: 'bg-[#FF7700]',
     buttonHover: 'hover:bg-[#E56A00]',
     accentText: 'text-orange-200',
-    searchPlaceholder: 'Zoek in Thuisbezorgd...',
+    searchPlaceholder: 'Search Thuisbezorgd...',
     tabActiveBg: 'bg-[#FF7700]',
   },
   hotel: {
@@ -59,7 +59,7 @@ export const BRAND_THEMES: Record<string, BrandTheme> = {
     buttonBg: 'bg-[#003580]',
     buttonHover: 'hover:bg-[#00264D]',
     accentText: 'text-blue-300',
-    searchPlaceholder: 'Zoek in Booking.com...',
+    searchPlaceholder: 'Search Booking.com...',
     tabActiveBg: 'bg-[#003580]',
   },
 };
@@ -171,7 +171,7 @@ function ProductCard({ product, theme }: ProductCardProps) {
           onClick={() => addItem(product)}
           className={`mt-3 w-full ${theme.buttonBg} ${theme.buttonHover} text-white rounded-lg py-2.5 text-sm font-semibold transition-colors`}
         >
-          In winkelwagen
+          Add to cart
         </button>
       </div>
     </div>
@@ -210,7 +210,7 @@ export function ProductGrid({ activeCategory, onCategoryChange }: ProductGridPro
       {/* Section header */}
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm text-gray-500">
-          {products.length} producten gevonden
+          {products.length} products found
         </p>
       </div>
 

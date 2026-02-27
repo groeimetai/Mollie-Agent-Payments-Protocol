@@ -14,7 +14,7 @@ const setupCustomerProfile = tool({
     emitAgentEvent({
       agent: 'payment',
       type: 'tool_call',
-      message: `Klantprofiel aanmaken voor auto-checkout via ${preferredMethod}`,
+      message: `Creating customer profile for auto-checkout via ${preferredMethod}`,
     });
 
     // If profile already exists, just update preferences
@@ -26,7 +26,7 @@ const setupCustomerProfile = tool({
       emitAgentEvent({
         agent: 'payment',
         type: 'result',
-        message: `Klantprofiel bijgewerkt: ${mandateStore.customerProfile.mollieCustomerId}`,
+        message: `Customer profile updated: ${mandateStore.customerProfile.mollieCustomerId}`,
         data: { customerId: mandateStore.customerProfile.mollieCustomerId, autoCheckout: true },
       });
 
@@ -35,7 +35,7 @@ const setupCustomerProfile = tool({
         autoCheckoutEnabled: true,
         preferredMethod,
         hasMandate: !!mandateStore.customerProfile.mollieMandateId,
-        message: `Auto-checkout bijgewerkt. Voorkeursmethode: ${preferredMethod}.${mandateStore.customerProfile.mollieMandateId ? ' Mandate is actief — volgende betalingen gaan automatisch.' : ' Bij de eerstvolgende betaling wordt je betaalmethode opgeslagen.'}`,
+        message: `Auto-checkout updated. Preferred method: ${preferredMethod}.${mandateStore.customerProfile.mollieMandateId ? ' Mandate is active — next payments will be processed automatically.' : ' Your payment method will be saved during the next payment.'}`,
       };
     }
 
@@ -62,13 +62,13 @@ const setupCustomerProfile = tool({
       addAuditEntry({
         agent: 'PaymentAgent',
         action: 'SETUP_CUSTOMER_PROFILE',
-        details: `Mollie klant aangemaakt: ${customer.id} — auto-checkout ingeschakeld met ${preferredMethod}`,
+        details: `Mollie customer created: ${customer.id} — auto-checkout enabled with ${preferredMethod}`,
       });
 
       emitAgentEvent({
         agent: 'payment',
         type: 'result',
-        message: `Klantprofiel aangemaakt: ${customer.id}`,
+        message: `Customer profile created: ${customer.id}`,
         data: { customerId: customer.id, autoCheckout: true },
       });
 
@@ -77,16 +77,16 @@ const setupCustomerProfile = tool({
         autoCheckoutEnabled: true,
         preferredMethod,
         hasMandate: false,
-        message: `Auto-checkout ingesteld! Klant ${customer.id} aangemaakt. Bij de eerstvolgende betaling wordt je ${preferredMethod} betaalmethode opgeslagen. Daarna gaan alle betalingen automatisch.`,
+        message: `Auto-checkout set up! Customer ${customer.id} created. Your ${preferredMethod} payment method will be saved during the next payment. After that, all payments will be processed automatically.`,
       };
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       emitAgentEvent({
         agent: 'payment',
         type: 'error',
-        message: `Klantprofiel fout: ${message}`,
+        message: `Customer profile error: ${message}`,
       });
-      return { error: `Kon klantprofiel niet aanmaken: ${message}` };
+      return { error: `Could not create customer profile: ${message}` };
     }
   },
 });
@@ -103,13 +103,13 @@ const createMolliePayment = tool({
     emitAgentEvent({
       agent: 'payment',
       type: 'tool_call',
-      message: `Mollie betaling aanmaken: €${amount.toFixed(2)} via ${method || 'ideal'}`,
+      message: `Creating Mollie payment: €${amount.toFixed(2)} via ${method || 'ideal'}`,
     });
 
     // Verify payment mandate exists
     const paymentMandate = mandateStore.paymentMandates.get(paymentMandateId);
     if (!paymentMandate) {
-      return { error: `Payment Mandate ${paymentMandateId} niet gevonden. Maak eerst een mandate chain aan.` };
+      return { error: `Payment Mandate ${paymentMandateId} not found. Create a mandate chain first.` };
     }
 
     try {
@@ -168,7 +168,7 @@ const createMolliePayment = tool({
       addAuditEntry({
         agent: 'PaymentAgent',
         action: 'CREATE_MOLLIE_PAYMENT',
-        details: `Mollie betaling aangemaakt: ${payment.id} — €${amount.toFixed(2)} [${sequenceLabel}]`,
+        details: `Mollie payment created: ${payment.id} — €${amount.toFixed(2)} [${sequenceLabel}]`,
         mandateId: paymentMandateId,
       });
 
@@ -203,8 +203,8 @@ const createMolliePayment = tool({
         agent: 'payment',
         type: 'result',
         message: isAutoCheckout
-          ? `Auto-checkout verwerkt: ${payment.id}`
-          : `Mollie betaling aangemaakt: ${payment.id}`,
+          ? `Auto-checkout processed: ${payment.id}`
+          : `Mollie payment created: ${payment.id}`,
         data: {
           paymentId: payment.id,
           checkoutUrl,
@@ -224,24 +224,24 @@ const createMolliePayment = tool({
         autoCheckout: isAutoCheckout,
         isFirstPayment,
         message: isAutoCheckout
-          ? `Betaling automatisch verwerkt via SEPA Direct Debit (iDEAL mandate)! Status: ${finalStatus}. Geen checkout nodig.`
+          ? `Payment automatically processed via SEPA Direct Debit (iDEAL mandate)! Status: ${finalStatus}. No checkout needed.`
           : isFirstPayment
-          ? `Eerste betaling met auto-checkout — klik op de checkout link. Na deze betaling gaan alle volgende betalingen automatisch via SEPA Direct Debit.`
+          ? `First payment with auto-checkout — click the checkout link. After this payment, all subsequent payments will go automatically via SEPA Direct Debit.`
           : checkoutUrl
-          ? `Betaling aangemaakt! Klik op de checkout link om te betalen via ${method || 'iDEAL'}.`
-          : 'Betaling aangemaakt, maar geen checkout URL beschikbaar.',
+          ? `Payment created! Click the checkout link to pay via ${method || 'iDEAL'}.`
+          : 'Payment created, but no checkout URL available.',
       };
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       emitAgentEvent({
         agent: 'payment',
         type: 'error',
-        message: `Mollie fout: ${message}`,
+        message: `Mollie error: ${message}`,
       });
 
       return {
-        error: `Mollie API fout: ${message}`,
-        suggestion: 'Controleer of de Mollie API key correct is en of het account actief is.',
+        error: `Mollie API error: ${message}`,
+        suggestion: 'Check that the Mollie API key is correct and the account is active.',
       };
     }
   },
@@ -286,7 +286,7 @@ const checkPaymentStatus = tool({
       };
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
-      return { error: `Kon status niet ophalen: ${message}` };
+      return { error: `Could not retrieve status: ${message}` };
     }
   },
 });
@@ -301,7 +301,7 @@ const cancelPayment = tool({
     emitAgentEvent({
       agent: 'payment',
       type: 'tool_call',
-      message: `Betaling annuleren: ${paymentId}`,
+      message: `Canceling payment: ${paymentId}`,
     });
 
     try {
@@ -313,32 +313,32 @@ const cancelPayment = tool({
       addAuditEntry({
         agent: 'PaymentAgent',
         action: 'CANCEL_PAYMENT',
-        details: `Betaling geannuleerd: ${paymentId}${reason ? ` — reden: ${reason}` : ''}`,
+        details: `Payment canceled: ${paymentId}${reason ? ` — reason: ${reason}` : ''}`,
       });
 
       emitAgentEvent({
         agent: 'payment',
         type: 'result',
-        message: `Betaling geannuleerd: ${paymentId}`,
+        message: `Payment canceled: ${paymentId}`,
       });
 
       return {
         paymentId: payment.id,
         status: payment.status,
         canceled: true,
-        reason: reason || 'Gebruiker annulering',
+        reason: reason || 'User cancellation',
       };
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       emitAgentEvent({
         agent: 'payment',
         type: 'error',
-        message: `Annulering mislukt: ${message}`,
+        message: `Cancellation failed: ${message}`,
       });
 
       return {
-        error: `Kon betaling niet annuleren: ${message}`,
-        suggestion: 'De betaling is mogelijk al voltooid of verlopen.',
+        error: `Could not cancel payment: ${message}`,
+        suggestion: 'The payment may already be completed or expired.',
       };
     }
   },
@@ -354,12 +354,12 @@ const generateReceipt = tool({
     emitAgentEvent({
       agent: 'payment',
       type: 'tool_call',
-      message: 'Betaalbewijs genereren...',
+      message: 'Generating payment receipt...',
     });
 
     const paymentMandate = mandateStore.paymentMandates.get(paymentMandateId);
     if (!paymentMandate) {
-      return { error: 'Payment Mandate niet gevonden' };
+      return { error: 'Payment Mandate not found' };
     }
 
     // Get actual Mollie payment status
@@ -386,7 +386,7 @@ const generateReceipt = tool({
     addAuditEntry({
       agent: 'PaymentAgent',
       action: 'GENERATE_RECEIPT',
-      details: `Receipt gegenereerd voor ${molliePaymentId} — status: ${mollieStatus}`,
+      details: `Receipt generated for ${molliePaymentId} — status: ${mollieStatus}`,
       mandateId: paymentMandateId,
     });
 
@@ -425,31 +425,31 @@ export async function runPaymentAgent(prompt: string): Promise<string> {
   emitAgentEvent({
     agent: 'payment',
     type: 'start',
-    message: 'Payment Agent geactiveerd',
+    message: 'Payment Agent activated',
   });
 
   const result = await generateText({
     model: getModel(),
-    system: `Je bent de Payment Agent. Je verwerkt betalingen via Mollie en ondersteunt zowel handmatige als automatische checkout.
+    system: `You are the Payment Agent. You process payments via Mollie and support both manual and automatic checkout.
 
-Je werkwijze:
-1. Als de gebruiker auto-checkout wil: gebruik setupCustomerProfile om een Mollie klantprofiel aan te maken
-2. Maak een Mollie betaling aan met createMolliePayment (vereist een AP2 Payment Mandate ID)
-   - Als auto-checkout actief is met een geldige mandate: betaling gaat automatisch (geen checkout URL)
-   - Als het de eerste betaling is met auto-checkout: gebruiker doorloopt checkout (mandate wordt vastgelegd)
-   - Zonder auto-checkout: standaard handmatige flow met checkout URL
-3. Check de status met checkPaymentStatus als gevraagd
-4. Genereer een receipt na succesvolle betaling
+Your workflow:
+1. If the user wants auto-checkout: use setupCustomerProfile to create a Mollie customer profile
+2. Create a Mollie payment with createMolliePayment (requires an AP2 Payment Mandate ID)
+   - If auto-checkout is active with a valid mandate: payment goes automatically (no checkout URL)
+   - If it's the first payment with auto-checkout: user goes through checkout (mandate is captured)
+   - Without auto-checkout: standard manual flow with checkout URL
+3. Check the status with checkPaymentStatus if requested
+4. Generate a receipt after successful payment
 
-BELANGRIJK:
-- Gebruik ALTIJD de Payment Mandate ID die je ontvangt
-- Bij auto-checkout: meld dat de betaling automatisch verwerkt wordt via SEPA Direct Debit
-- Recurring betalingen gaan ALTIJD via SEPA Direct Debit, ook als de eerste betaling via iDEAL was. Dit is by design van Mollie — iDEAL mandates worden SEPA mandates.
-- Bij eerste betaling met auto-checkout: leg uit dat dit de LAATSTE keer is dat ze handmatig moeten betalen, en dat volgende betalingen via SEPA gaan
-- Bij handmatige checkout: geef de checkout URL duidelijk weer
-- Bij annulering: gebruik cancelPayment
+IMPORTANT:
+- ALWAYS use the Payment Mandate ID you receive
+- For auto-checkout: report that the payment is processed automatically via SEPA Direct Debit
+- Recurring payments ALWAYS go via SEPA Direct Debit, even if the first payment was via iDEAL. This is by design from Mollie — iDEAL mandates become SEPA mandates.
+- For first payment with auto-checkout: explain that this is the LAST time they need to pay manually, and that subsequent payments will go via SEPA
+- For manual checkout: clearly display the checkout URL
+- For cancellation: use cancelPayment
 
-Communiceer in het Nederlands.`,
+Communicate in English.`,
     tools: paymentTools,
     stopWhen: stepCountIs(5),
     prompt,
@@ -458,7 +458,7 @@ Communiceer in het Nederlands.`,
   emitAgentEvent({
     agent: 'payment',
     type: 'complete',
-    message: 'Payment Agent klaar',
+    message: 'Payment Agent done',
   });
 
   return result.text;

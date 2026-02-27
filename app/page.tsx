@@ -27,8 +27,8 @@ function PaymentSuccessToast({ onDismiss }: { onDismiss: () => void }) {
           </svg>
         </div>
         <div>
-          <div className="font-semibold text-gray-900 text-sm">Betaling geslaagd!</div>
-          <div className="text-xs text-gray-500">Verwerkt via Mollie met AP2 protocol</div>
+          <div className="font-semibold text-gray-900 text-sm">Payment successful!</div>
+          <div className="text-xs text-gray-500">Processed via Mollie with AP2 protocol</div>
         </div>
         <button onClick={onDismiss} className="ml-3 text-gray-400 hover:text-gray-600">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -46,12 +46,17 @@ function DashboardContent({ onClose }: { onClose?: () => void }) {
       {/* Dashboard header */}
       <div className="px-4 py-3 border-b border-zinc-800 bg-zinc-900/50 shrink-0">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-zinc-300">
-            Agent Dashboard
-          </h2>
+          <div>
+            <h2 className="text-sm font-semibold text-zinc-300">
+              AP2 Agent Dashboard
+            </h2>
+            <p className="text-xs text-zinc-600 mt-0.5">
+              Multi-agent system handling checkout via AP2 mandate chain
+            </p>
+          </div>
           <div className="flex items-center gap-2">
             <div className="text-xs text-zinc-600 font-mono hidden sm:block">
-              AP2 Protocol v1
+              AP2 + Mollie
             </div>
             <button
               onClick={async () => {
@@ -59,7 +64,7 @@ function DashboardContent({ onClose }: { onClose?: () => void }) {
                 window.location.reload();
               }}
               className="text-xs text-zinc-600 hover:text-zinc-300 px-2 py-1 rounded border border-zinc-800 hover:border-zinc-600 transition-colors"
-              title="Reset server state voor demo"
+              title="Reset server state for demo"
             >
               Reset
             </button>
@@ -115,7 +120,25 @@ function HomeContent() {
       {showPaymentSuccess && (
         <PaymentSuccessToast onDismiss={() => setShowPaymentSuccess(false)} />
       )}
-      <div className="flex h-dvh">
+      <div className="flex flex-col h-dvh">
+        {/* Demo banner */}
+        <div className="bg-gradient-to-r from-zinc-900 via-zinc-900 to-blue-950 text-white px-4 py-2.5 shrink-0 border-b border-zinc-800">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="flex items-center gap-1.5 shrink-0">
+                <span className="font-bold text-blue-400">AP2</span>
+                <span className="text-zinc-600">+</span>
+                <span className="font-bold text-orange-400">Mollie</span>
+              </div>
+              <span className="text-zinc-700 hidden sm:inline">|</span>
+              <span className="text-zinc-300 text-sm hidden sm:inline">Google&apos;s Agent Payment Protocol integrated with Mollie</span>
+            </div>
+            <div className="text-xs text-zinc-500 shrink-0 hidden md:block">
+              Approve once → then fully automatic · No forms · No redirects
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-1 overflow-hidden">
         {/* Webshop — full width on mobile, 60% on desktop */}
         <div className="relative flex flex-col w-full lg:w-[60%] bg-gray-50 overflow-hidden">
           <Header
@@ -158,6 +181,7 @@ function HomeContent() {
           }`}
         >
           <DashboardContent onClose={() => setDashboardOpen(false)} />
+        </div>
         </div>
       </div>
     </CartProvider>

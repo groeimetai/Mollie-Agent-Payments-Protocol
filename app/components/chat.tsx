@@ -15,36 +15,36 @@ interface ChatProps {
 }
 
 const TOOL_LABELS: Record<string, { icon: string; label: string; agent: string }> = {
-  shopping: { icon: '🛒', label: 'Shopping Agent', agent: 'Zoekt & vergelijkt producten' },
+  shopping: { icon: '🛒', label: 'Shopping Agent', agent: 'Searches & compares products' },
   mandate: { icon: '📜', label: 'Mandate Agent', agent: 'AP2 mandate chain' },
-  payment: { icon: '💳', label: 'Payment Agent', agent: 'Mollie betaling' },
-  getSystemStatus: { icon: '📊', label: 'System Status', agent: 'Status overzicht' },
+  payment: { icon: '💳', label: 'Payment Agent', agent: 'Mollie payment' },
+  getSystemStatus: { icon: '📊', label: 'System Status', agent: 'Status overview' },
 };
 
 const BRAND_SUGGESTIONS: Record<string, { icon: string; prompt: string }[]> = {
   laptop: [
-    { icon: '💻', prompt: 'Koop een laptop onder €1200' },
-    { icon: '💼', prompt: 'Zoek een goede laptophoes' },
-    { icon: '⚡', prompt: 'Reken mijn cart af via iDEAL' },
-    { icon: '🔍', prompt: 'Vergelijk laptops op prijs' },
+    { icon: '💻', prompt: 'Buy a laptop under €1200' },
+    { icon: '💼', prompt: 'Find a good laptop sleeve' },
+    { icon: '⚡', prompt: 'Check out my cart via iDEAL' },
+    { icon: '🔍', prompt: 'Compare laptops by price' },
   ],
   sneakers: [
-    { icon: '👟', prompt: 'Zoek witte sneakers onder €150' },
-    { icon: '🧴', prompt: 'Ik zoek een beschermspray' },
-    { icon: '⚡', prompt: 'Reken mijn cart af via iDEAL' },
-    { icon: '🔍', prompt: 'Vergelijk sneakers op prijs' },
+    { icon: '👟', prompt: 'Find white sneakers under €150' },
+    { icon: '🧴', prompt: 'I need a protection spray' },
+    { icon: '⚡', prompt: 'Check out my cart via iDEAL' },
+    { icon: '🔍', prompt: 'Compare sneakers by price' },
   ],
   boodschappen: [
-    { icon: '🍕', prompt: 'Bestel een maaltijdpakket voor 4' },
-    { icon: '🥤', prompt: 'Voeg drinken toe aan mijn bestelling' },
-    { icon: '⚡', prompt: 'Reken mijn cart af via iDEAL' },
-    { icon: '🔍', prompt: 'Wat is het goedkoopste pakket?' },
+    { icon: '🍕', prompt: 'Order a meal kit for 4' },
+    { icon: '🥤', prompt: 'Add drinks to my order' },
+    { icon: '⚡', prompt: 'Check out my cart via iDEAL' },
+    { icon: '🔍', prompt: 'What is the cheapest meal kit?' },
   ],
   hotel: [
-    { icon: '🏨', prompt: 'Boek een hotel in Amsterdam' },
-    { icon: '⭐', prompt: 'Wat is het best beoordeelde hotel?' },
-    { icon: '⚡', prompt: 'Reken mijn cart af via iDEAL' },
-    { icon: '💰', prompt: 'Hotels onder €200 per nacht' },
+    { icon: '🏨', prompt: 'Book a hotel in Amsterdam' },
+    { icon: '⭐', prompt: 'What is the best rated hotel?' },
+    { icon: '⚡', prompt: 'Check out my cart via iDEAL' },
+    { icon: '💰', prompt: 'Hotels under €200 per night' },
   ],
 };
 
@@ -92,7 +92,7 @@ function ToolInvocation({ part, variant }: { part: Record<string, unknown>; vari
           {isRunning && (
             <span className={`flex items-center gap-1 ${isPopup ? 'text-orange-500' : 'text-amber-400'}`}>
               <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${isPopup ? 'bg-orange-500' : 'bg-amber-400'}`} />
-              actief
+              active
             </span>
           )}
           {isDone && (
@@ -146,7 +146,7 @@ function ToolInvocation({ part, variant }: { part: Record<string, unknown>; vari
           {isRunning && (
             <div className={`px-3 py-3 flex items-center gap-2 ${isPopup ? 'text-gray-400' : 'text-zinc-500'}`}>
               <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${isPopup ? 'bg-orange-500' : 'bg-amber-400'}`} />
-              Agent is bezig...
+              Agent is working...
             </div>
           )}
         </div>
@@ -228,8 +228,8 @@ export function Chat({ variant = 'standalone', cartContext, cartTotal, brandColo
                 {name} Checkout Agent
               </h2>
               <p className="text-xs max-w-sm mx-auto mb-4 text-gray-500">
-                Hoi! Ik kan je helpen met shoppen en afrekenen.
-                Vraag me iets te kopen of voeg een product toe aan je winkelwagen.
+                Hi! I can help you shop and check out.
+                Ask me to buy something or add a product to your cart.
               </p>
               <div className="grid grid-cols-2 gap-2 max-w-xs mx-auto text-left">
                 {suggestions.map((uc) => (
@@ -254,8 +254,8 @@ export function Chat({ variant = 'standalone', cartContext, cartTotal, brandColo
                 AP2 + Mollie Agent
               </h2>
               <p className="text-sm max-w-lg mx-auto mb-6 text-zinc-500">
-                Eerste werkende AP2 (Agent Payment Protocol) integratie met een echte betaalprovider.
-                Jouw AI agent koopt autonoom bij 60.000+ Mollie merchants.
+                First working AP2 (Agent Payment Protocol) integration with a real payment provider.
+                Your AI agent shops autonomously at 60,000+ Mollie merchants.
               </p>
 
               <div className="grid grid-cols-2 gap-3 max-w-xl mx-auto text-left">
@@ -264,31 +264,31 @@ export function Chat({ variant = 'standalone', cartContext, cartTotal, brandColo
                     icon: '💻',
                     title: 'Electronics',
                     merchant: 'bol.com',
-                    prompt: 'Ik wil een laptop kopen onder de 1200 euro',
+                    prompt: 'I want to buy a laptop under 1200 euros',
                   },
                   {
                     icon: '👟',
                     title: 'Fashion',
                     merchant: 'Nike',
-                    prompt: 'Ik zoek witte sneakers, budget tot 150 euro',
+                    prompt: 'I\'m looking for white sneakers, budget up to 150 euros',
                   },
                   {
                     icon: '🍕',
-                    title: 'Eten & Drinken',
+                    title: 'Food & Drinks',
                     merchant: 'Thuisbezorgd',
-                    prompt: 'Doe boodschappen voor pasta carbonara voor 4 personen',
+                    prompt: 'Order groceries for pasta carbonara for 4 people',
                   },
                   {
                     icon: '🏨',
-                    title: 'Reizen',
+                    title: 'Travel',
                     merchant: 'Booking.com',
-                    prompt: 'Boek een hotel in Amsterdam voor 2 nachten onder 200 euro per nacht',
+                    prompt: 'Book a hotel in Amsterdam for 2 nights under 200 euros per night',
                   },
                   {
                     icon: '⚡',
                     title: 'Auto-Checkout',
                     merchant: 'Recurring via Mollie',
-                    prompt: 'Stel auto-checkout in met iDEAL en koop sneakers',
+                    prompt: 'Set up auto-checkout with iDEAL and buy sneakers',
                   },
                 ].map((useCase) => (
                   <button
@@ -315,7 +315,7 @@ export function Chat({ variant = 'standalone', cartContext, cartTotal, brandColo
               <div className="mt-6 max-w-xl mx-auto">
                 <div className="flex items-center gap-2 justify-center text-[11px] text-zinc-700 font-mono">
                   <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-                  Elke use case = echte Mollie transactie via AP2 protocol
+                  Every use case = real Mollie transaction via AP2 protocol
                 </div>
               </div>
             </div>
@@ -416,7 +416,7 @@ export function Chat({ variant = 'standalone', cartContext, cartTotal, brandColo
                   />
                 </div>
                 <span className={`text-xs ${isPopup ? 'text-gray-400' : 'text-zinc-500'}`}>
-                  Agents aan het werk...
+                  Agents working...
                 </span>
               </div>
             </div>
@@ -432,7 +432,7 @@ export function Chat({ variant = 'standalone', cartContext, cartTotal, brandColo
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={isPopup ? 'Stel een vraag...' : 'Vraag me iets te kopen...'}
+            placeholder={isPopup ? 'Ask a question...' : 'Ask me to buy something...'}
             className={`flex-1 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-1 ${
               isPopup
                 ? 'bg-gray-50 text-gray-900 border border-gray-200 focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400'
@@ -459,7 +459,7 @@ export function Chat({ variant = 'standalone', cartContext, cartTotal, brandColo
               }`}
               style={isPopup && input.trim() ? { backgroundColor: color } : undefined}
             >
-              Verstuur
+              Send
             </button>
           )}
         </form>

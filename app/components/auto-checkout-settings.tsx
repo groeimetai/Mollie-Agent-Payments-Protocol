@@ -102,15 +102,15 @@ export function AutoCheckoutSettings() {
   // Status indicator
   const getStatusInfo = () => {
     if (!state?.hasProfile) {
-      return { label: 'Niet ingesteld', color: 'text-zinc-500', dot: 'bg-zinc-500' };
+      return { label: 'Not configured', color: 'text-zinc-500', dot: 'bg-zinc-500' };
     }
     if (!state.enabled) {
-      return { label: 'Uitgeschakeld', color: 'text-zinc-500', dot: 'bg-zinc-500' };
+      return { label: 'Disabled', color: 'text-zinc-500', dot: 'bg-zinc-500' };
     }
     if (state.isFullyActive) {
-      return { label: `Actief (${state.mandateId})`, color: 'text-blue-400', dot: 'bg-blue-400 animate-pulse' };
+      return { label: `Active (${state.mandateId})`, color: 'text-blue-400', dot: 'bg-blue-400 animate-pulse' };
     }
-    return { label: 'Wacht op eerste betaling...', color: 'text-amber-400', dot: 'bg-amber-400 animate-pulse' };
+    return { label: 'Waiting for first payment...', color: 'text-amber-400', dot: 'bg-amber-400 animate-pulse' };
   };
 
   const statusInfo = getStatusInfo();
@@ -125,10 +125,10 @@ export function AutoCheckoutSettings() {
         // Setup mode
         <div className="space-y-3">
           <p className="text-xs text-zinc-500">
-            Activeer om betalingen automatisch te verwerken na de eerste keer.
+            Enable to process payments automatically after the first time.
           </p>
           <div>
-            <label className="text-xs text-zinc-500 block mb-1">Betaalmethode</label>
+            <label className="text-xs text-zinc-500 block mb-1">Payment method</label>
             <select
               value={method}
               onChange={(e) => setMethod(e.target.value)}
@@ -144,7 +144,7 @@ export function AutoCheckoutSettings() {
             disabled={loading}
             className="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-700 text-white rounded-lg text-xs font-medium transition-colors"
           >
-            {loading ? 'Instellen...' : 'Activeer Auto-Checkout'}
+            {loading ? 'Setting up...' : 'Enable Auto-Checkout'}
           </button>
         </div>
       ) : (
@@ -170,7 +170,7 @@ export function AutoCheckoutSettings() {
 
           {/* Method dropdown */}
           <div>
-            <label className="text-xs text-zinc-500 block mb-1">Betaalmethode</label>
+            <label className="text-xs text-zinc-500 block mb-1">Payment method</label>
             <select
               value={method}
               onChange={(e) => handleMethodChange(e.target.value)}
@@ -193,7 +193,7 @@ export function AutoCheckoutSettings() {
           {/* Customer ID */}
           {state.customerId && (
             <div className="flex items-center justify-between text-xs">
-              <span className="text-zinc-500">Klant</span>
+              <span className="text-zinc-500">Customer</span>
               <span className="font-mono text-zinc-400">{state.customerId}</span>
             </div>
           )}

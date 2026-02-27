@@ -116,7 +116,7 @@ export function Header({ activeCategory, onCartClick, onCategoryChange }: Header
               </button>
             ))}
             <span className="hover:text-white cursor-pointer transition-colors shrink-0">
-              Klantenservice
+              Customer Service
             </span>
           </div>
         </div>

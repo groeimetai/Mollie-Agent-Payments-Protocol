@@ -39,7 +39,7 @@ const createIntentMandate = tool({
     emitAgentEvent({
       agent: 'mandate',
       type: 'tool_call',
-      message: `Intent Mandate aanmaken: "${description}" (max €${maxBudget})`,
+      message: `Creating Intent Mandate: "${description}" (max €${maxBudget})`,
     });
 
     const mandate: IntentMandate = {
@@ -60,14 +60,14 @@ const createIntentMandate = tool({
     addAuditEntry({
       agent: 'MandateAgent',
       action: 'CREATE_INTENT_MANDATE',
-      details: `Intent mandate aangemaakt: ${description} (max €${maxBudget})`,
+      details: `Intent mandate created: ${description} (max €${maxBudget})`,
       mandateId: mandate.id,
     });
 
     emitAgentEvent({
       agent: 'mandate',
       type: 'result',
-      message: `Intent Mandate aangemaakt: ${mandate.id}`,
+      message: `Intent Mandate created: ${mandate.id}`,
       data: { mandateId: mandate.id },
     });
 
@@ -100,18 +100,18 @@ const createCartMandate = tool({
     emitAgentEvent({
       agent: 'mandate',
       type: 'tool_call',
-      message: `Cart Mandate aanmaken voor ${items.length} item(s)`,
+      message: `Creating Cart Mandate for ${items.length} item(s)`,
     });
 
     // Verify intent mandate exists
     const intentMandate = mandateStore.intentMandates.get(intentMandateId);
     if (!intentMandate) {
-      return { error: `Intent Mandate ${intentMandateId} niet gevonden` };
+      return { error: `Intent Mandate ${intentMandateId} not found` };
     }
 
     // Check expiration
     if (new Date(intentMandate.expiration) < new Date()) {
-      return { error: 'Intent Mandate is verlopen' };
+      return { error: 'Intent Mandate has expired' };
     }
 
     const total = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
@@ -119,7 +119,7 @@ const createCartMandate = tool({
     // Check budget
     if (total > intentMandate.maxBudget) {
       return {
-        error: `Totaal €${total.toFixed(2)} overschrijdt budget van €${intentMandate.maxBudget.toFixed(2)}`,
+        error: `Total €${total.toFixed(2)} exceeds budget of €${intentMandate.maxBudget.toFixed(2)}`,
       };
     }
 
@@ -152,14 +152,14 @@ const createCartMandate = tool({
     addAuditEntry({
       agent: 'MandateAgent',
       action: 'CREATE_CART_MANDATE',
-      details: `Cart mandate aangemaakt: ${items.length} item(s), totaal €${total.toFixed(2)}`,
+      details: `Cart mandate created: ${items.length} item(s), total €${total.toFixed(2)}`,
       mandateId: cartMandate.id,
     });
 
     emitAgentEvent({
       agent: 'mandate',
       type: 'result',
-      message: `Cart Mandate aangemaakt: ${cartMandate.id} (€${total.toFixed(2)})`,
+      message: `Cart Mandate created: ${cartMandate.id} (€${total.toFixed(2)})`,
       data: { mandateId: cartMandate.id, total },
     });
 
@@ -186,19 +186,19 @@ const createPaymentMandate = tool({
     emitAgentEvent({
       agent: 'mandate',
       type: 'tool_call',
-      message: `Payment Mandate aanmaken (${paymentMethod})`,
+      message: `Creating Payment Mandate (${paymentMethod})`,
     });
 
     const cartMandate = mandateStore.cartMandates.get(cartMandateId);
     if (!cartMandate) {
-      return { error: `Cart Mandate ${cartMandateId} niet gevonden` };
+      return { error: `Cart Mandate ${cartMandateId} not found` };
     }
 
     // Verify cart mandate signature
     try {
       await jwtVerify(cartMandate.merchantSignature, JWT_SECRET.value);
     } catch {
-      return { error: 'Cart Mandate signature ongeldig — mogelijke manipulatie' };
+      return { error: 'Cart Mandate signature invalid — possible tampering' };
     }
 
     // Create user authorization token
@@ -231,14 +231,14 @@ const createPaymentMandate = tool({
     addAuditEntry({
       agent: 'MandateAgent',
       action: 'CREATE_PAYMENT_MANDATE',
-      details: `Payment mandate aangemaakt: €${cartMandate.total.amount.toFixed(2)} via ${paymentMethod}`,
+      details: `Payment mandate created: €${cartMandate.total.amount.toFixed(2)} via ${paymentMethod}`,
       mandateId: paymentMandate.id,
     });
 
     emitAgentEvent({
       agent: 'mandate',
       type: 'result',
-      message: `Payment Mandate aangemaakt: ${paymentMandate.id}`,
+      message: `Payment Mandate created: ${paymentMandate.id}`,
       data: { mandateId: paymentMandate.id },
     });
 
@@ -264,46 +264,46 @@ const validateMandateChain = tool({
     emitAgentEvent({
       agent: 'mandate',
       type: 'tool_call',
-      message: 'Mandate chain validatie...',
+      message: 'Validating mandate chain...',
     });
 
     const paymentMandate = mandateStore.paymentMandates.get(paymentMandateId);
     if (!paymentMandate) {
-      return { valid: false, error: 'Payment Mandate niet gevonden' };
+      return { valid: false, error: 'Payment Mandate not found' };
     }
 
     const cartMandate = mandateStore.cartMandates.get(paymentMandate.cartMandateId);
     if (!cartMandate) {
-      return { valid: false, error: 'Cart Mandate niet gevonden in chain' };
+      return { valid: false, error: 'Cart Mandate not found in chain' };
     }
 
     const intentMandate = mandateStore.intentMandates.get(cartMandate.intentMandateId);
     if (!intentMandate) {
-      return { valid: false, error: 'Intent Mandate niet gevonden in chain' };
+      return { valid: false, error: 'Intent Mandate not found in chain' };
     }
 
     // Verify signatures
     try {
       await jwtVerify(cartMandate.merchantSignature, JWT_SECRET.value);
     } catch {
-      return { valid: false, error: 'Cart Mandate signature ongeldig' };
+      return { valid: false, error: 'Cart Mandate signature invalid' };
     }
 
     try {
       await jwtVerify(paymentMandate.userAuthorization, JWT_SECRET.value);
     } catch {
-      return { valid: false, error: 'Payment Mandate authorization ongeldig' };
+      return { valid: false, error: 'Payment Mandate authorization invalid' };
     }
 
     // Budget check
     if (cartMandate.total.amount > intentMandate.maxBudget) {
-      return { valid: false, error: 'Bedrag overschrijdt budget' };
+      return { valid: false, error: 'Amount exceeds budget' };
     }
 
     emitAgentEvent({
       agent: 'mandate',
       type: 'result',
-      message: 'Mandate chain geldig!',
+      message: 'Mandate chain valid!',
     });
 
     return {
@@ -348,25 +348,25 @@ export async function runMandateAgent(prompt: string): Promise<string> {
   emitAgentEvent({
     agent: 'mandate',
     type: 'start',
-    message: 'Mandate Agent geactiveerd',
+    message: 'Mandate Agent activated',
   });
 
   const result = await generateText({
     model: getModel(),
-    system: `Je bent de Mandate Agent. Je beheert het AP2 (Agent Payment Protocol) mandate systeem.
+    system: `You are the Mandate Agent. You manage the AP2 (Agent Payment Protocol) mandate system.
 
-Het AP2 protocol werkt met drie lagen mandates:
-1. Intent Mandate — vastleggen van de gebruiker's aankoopintentie en budget
-2. Cart Mandate — vastleggen van de geselecteerde producten met JWT-signed bevestiging
-3. Payment Mandate — betalingsautorisatie voor de payment provider
+The AP2 protocol works with three layers of mandates:
+1. Intent Mandate — capturing the user's purchase intention and budget
+2. Cart Mandate — capturing the selected products with JWT-signed confirmation
+3. Payment Mandate — payment authorization for the payment provider
 
-Je werkwijze:
-1. Maak een Intent Mandate voor de gebruiker's wens
-2. Na productselectie: maak een Cart Mandate met de items
-3. Maak een Payment Mandate als autorisatie voor betaling
-4. Valideer de hele mandate chain
+Your workflow:
+1. Create an Intent Mandate for the user's request
+2. After product selection: create a Cart Mandate with the items
+3. Create a Payment Mandate as authorization for payment
+4. Validate the entire mandate chain
 
-Communiceer in het Nederlands. Geef altijd de mandate IDs terug.`,
+Communicate in English. Always return the mandate IDs.`,
     tools: mandateTools,
     stopWhen: stepCountIs(8),
     prompt,
@@ -375,7 +375,7 @@ Communiceer in het Nederlands. Geef altijd de mandate IDs terug.`,
   emitAgentEvent({
     agent: 'mandate',
     type: 'complete',
-    message: 'Mandate Agent klaar',
+    message: 'Mandate Agent done',
   });
 
   return result.text;

@@ -62,7 +62,7 @@ export function PaymentStatus() {
 
   if (!paymentId) return null;
 
-  const modeLabel = autoCheckout ? 'Automatisch' : 'Handmatig';
+  const modeLabel = autoCheckout ? 'Automatic' : 'Manual';
   const modeColor = autoCheckout ? 'text-blue-400' : 'text-zinc-400';
 
   return (
@@ -74,7 +74,7 @@ export function PaymentStatus() {
         {(autoCheckout || autoCheckoutActive) && (
           <span className="flex items-center gap-1.5 text-xs font-medium text-blue-400">
             <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-            Auto-checkout actief
+            Auto-checkout active
           </span>
         )}
       </div>
@@ -98,12 +98,12 @@ export function PaymentStatus() {
           </span>
         </div>
         <div className="flex items-center justify-between text-xs">
-          <span className="text-zinc-500">Modus</span>
+          <span className="text-zinc-500">Mode</span>
           <span className={`font-mono ${modeColor}`}>{modeLabel}</span>
         </div>
         {method && (
           <div className="flex items-center justify-between text-xs">
-            <span className="text-zinc-500">Methode</span>
+            <span className="text-zinc-500">Method</span>
             <span className="font-mono text-zinc-300">{method}</span>
           </div>
         )}
@@ -111,7 +111,7 @@ export function PaymentStatus() {
         {/* First payment info */}
         {isFirstPayment && checkoutUrl && status !== 'paid' && (
           <div className="text-xs text-amber-400/80 py-1">
-            Eerste betaling — na deze keer gaat alles automatisch
+            First payment — after this, everything goes automatic
           </div>
         )}
 
@@ -130,14 +130,14 @@ export function PaymentStatus() {
         {/* Auto-checkout success */}
         {autoCheckout && status === 'paid' && (
           <div className="flex items-center justify-center gap-1.5 py-2 text-emerald-400 text-xs font-medium">
-            <span>⚡</span> Automatische betaling geslaagd
+            <span>⚡</span> Automatic payment successful
           </div>
         )}
 
         {/* Manual success */}
         {!autoCheckout && status === 'paid' && (
           <div className="text-center py-2 text-emerald-400 text-xs font-medium">
-            ✓ Betaling geslaagd
+            ✓ Payment successful
           </div>
         )}
       </div>
